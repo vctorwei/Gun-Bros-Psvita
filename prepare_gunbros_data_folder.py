@@ -65,6 +65,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--patched-dir", type=Path, default=repo_root / "gunbros_free",
                         help="Patched data overlay (default: %(default)s)")
     parser.add_argument("--logos-dir", type=Path, default=repo_root / "logos")
+    parser.add_argument("--savedata-dir", type=Path,
+                        default=next((repo_root / name for name in ("savedata", "savetata")
+                                      if (repo_root / name).is_dir()), None),
+                        help="Save contents to copy into gunbros_free (auto-detected beside script)")
     parser.add_argument("--files-dir", type=Path, help="Game files folder")
     parser.add_argument("--apk-dir", type=Path, help="Folder containing all extracted APK contents")
     parser.add_argument("--output-dir", type=Path, default=repo_root / "build/data/gunbros",
@@ -570,7 +574,11 @@ def preparation_plan(args: argparse.Namespace) -> tuple[dict[str, Path], dict]:
     roots = [p.expanduser().resolve() for p in
              ((args.apk_dir, args.files_dir, args.logos_dir) if simple else
               (args.original_dir, args.patched_dir, args.logos_dir))]
-    for root in roots:
+    savedata = getattr(args, "savedata_dir", None)
+    savedata = savedata.expanduser().resolve() if savedata is not None else None
+    if savedata is not None and not savedata.is_dir():
+        raise ValueError(f"Savedata folder does not exist: {savedata}")
+    for root in roots + ([savedata] if savedata is not None else []):
         if output == root or output.is_relative_to(root) or root.is_relative_to(output):
             raise ValueError(f"Output must be separate from input directories: {root}")
     if output.exists():
@@ -590,6 +598,14 @@ def preparation_plan(args: argparse.Namespace) -> tuple[dict[str, Path], dict]:
         raise ValueError("Original data is incomplete: " + ", ".join(missing))
     merged = original | patched
     plan = {f"gunbros_free/{name}": path for name, path in merged.items()}
+    if savedata is not None:
+        for path in sorted(savedata.rglob("*")):
+            if not path.is_file():
+                continue
+            name = "gunbros_free/" + path.relative_to(savedata).as_posix()
+            if name.casefold() in {key.casefold() for key in plan}:
+                raise ValueError(f"Savedata conflicts with a game asset: {name}")
+            plan[name] = path
     for name in LOGOS:
         path = roots[2] / name
         if not path.is_file() or path.read_bytes()[:8] != b"\x89PNG\r\n\x1a\n":
@@ -615,6 +631,8 @@ def main() -> int:
         print(f"Verified native library SHA-256: {SUPPORTED_SO_SHA256}")
         changed = sum(bool(item.get("changed_by_overlay")) for item in report["files"].values())
         print(f"Plan: {len(plan)} source files, {changed} changed by patched overlay")
+        if getattr(args, "savedata_dir", None) is not None:
+            print(f"Copy savedata contents: {args.savedata_dir} -> gunbros_free/")
         if args.dry_run:
             print(f"Would prepare {args.output_dir}; audio conversion was not executed")
             return 0

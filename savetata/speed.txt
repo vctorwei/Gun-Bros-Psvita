@@ -1,0 +1,7 @@
+# Gun Bros Vita internal game-logic clock
+# Restart the game after changing this file.
+# 1.0 = original speed, 0.5 = half speed, 1.25 = 25% faster.
+speed=1.0
+# Caps one gameplay update after a loading/render stall. 33 is recommended.
+# This setting does not change menus, the shop, or refinery timing.
+max_delta_ms=33
