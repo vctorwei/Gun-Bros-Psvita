@@ -1,0 +1,10 @@
+build/*
+build-debug/
+/Gun_Bros.vpk
+/output/
+__pycache__/
+.DS_Store
+.idea/
+cmake-build-*/
+lib/libc_bridge/out/
+apk/

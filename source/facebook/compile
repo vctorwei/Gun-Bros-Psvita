@@ -1,0 +1,3 @@
+arm-vita-eabi-gcc -c facebook_handler.c -o facebook_handler.o
+ar rcs libfacebook_stub.a facebook_handler.o
+
