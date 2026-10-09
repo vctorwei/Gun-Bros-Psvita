@@ -2,7 +2,11 @@
 
 可以只改存档文件，**不需要重新编译或安装 VPK**。普通金币和金色 Glu 金币是两个独立字段，修改其中一个不会自动修改另一个。
 
-本方法适用于这个移植版 Classic 的 `GBVP`、版本 `1` 离线存档。格式根据 [存档实现](../source/patch/objects.inc.c) 核对；如果文件格式不符，下面的脚本会拒绝修改。
+可以直接下载 [示例工具包](https://github.com/vctorwei/Gun-Bros-Psvita/raw/refs/heads/main/coin_cheat/gunbros-coin-cheat-example.zip)，解压后放入自己的最新存档，运行 `python3 set_coins.py`。包内附有独立脚本和中英文说明；每位玩家使用自己的存档，保留现有进度。
+
+**[English instructions](https://github.com/vctorwei/Gun-Bros-Psvita/blob/main/coin_cheat/README_EN.md)** · [独立脚本](https://github.com/vctorwei/Gun-Bros-Psvita/blob/main/coin_cheat/set_coins.py)
+
+本方法适用于这个移植版 Classic 的 `GBVP`、版本 `1` 离线存档。格式根据 [存档实现](https://github.com/vctorwei/Gun-Bros-Psvita/blob/main/source/patch/objects.inc.c) 核对；如果文件格式不符，下面的脚本会拒绝修改。
 
 ## 要修改的文件
 
@@ -25,13 +29,15 @@ ux0:/data/gunbros/gunbros_free/vita_profile_v1.dat
 ## 操作步骤
 
 1. 完全关闭 Gun Bros，回到 VitaShell。不要只停留在游戏暂停菜单；游戏仍在运行时可能用内存中的旧余额覆盖文件。
-2. 用 USB 或 VitaShell FTP 下载上面的文件，并在电脑上另存一份原始备份。FTP 地址使用 VitaShell 当前显示的地址。
-3. 将下载的 `vita_profile_v1.dat` 和下面保存的 `set_coins.py` 放在电脑上的同一个文件夹。
+2. 用 USB 或 VitaShell FTP 下载上面的最新文件，并在电脑上另存一份原始备份。FTP 地址使用 VitaShell 当前显示的地址。
+3. 解压示例工具包，将下载的 `vita_profile_v1.dat` 放到包内 `set_coins.py` 的同一个文件夹。也可以手动保存下面的示例代码。
 4. 在该文件夹运行 `python3 set_coins.py`。Windows 也可以使用 `py -3 set_coins.py`。
 5. 脚本会生成 `vita_profile_v1.modified.dat`，保留原文件。确认输出的两种余额后，将生成文件上传到原目录，命名为 **`vita_profile_v1.dat`**，替换 PSV 上对应文件。
 6. 重新启动游戏，检查普通金币和金色 Glu 金币。需要恢复时，完全关闭游戏，再把原始备份以原文件名放回原目录。
 
 如果还没有这个文件，先正常进入游戏并保存、退出，让移植版生成存档，再下载修改。
+
+工具包里的独立脚本还支持命令行参数：`python3 set_coins.py --coins 99999 --glu-coins keep` 只改普通金币；`python3 set_coins.py --coins keep --glu-coins 99999` 只改金色 Glu 金币。自定义金额与文件路径的用法见英文说明。以下手动保存的简短示例通过代码顶部的两项变量设置金额。
 
 ## Python 3 示例
 
