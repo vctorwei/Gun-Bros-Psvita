@@ -12,6 +12,12 @@ The port works by loading the official Android ARMv7 executable in memory, resol
 
 ## Changelog
 
+### v1.01
+
+- Fix all audio stopping when a music stream reaches its decoded end before its
+  declared sample count. The shared mixer now reaches the existing loop or stop
+  branch instead of repeatedly requesting empty frames.
+
 ### v1.0
 
 - Initial release.
@@ -138,6 +144,10 @@ cmake --build build --parallel 4
 ```
 
 The build produces `build/Gun_Bros.vpk` and updates the root `Gun_Bros.vpk`. 
+
+The loader compiles the pinned [WavStream EOF fix](lib/soloud/README.md) against
+the VitaSDK SoLoud 1.11 ABI. Music files, music/SFX settings, audio output
+parameters and the other SoLoud components keep their existing behavior.
 
 ---
 ## Screenshots

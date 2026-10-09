@@ -14,7 +14,7 @@ include("${VITASDK}/share/vita.cmake" REQUIRED)
 set(VITA_APP_NAME "Gun Bros")
 set(VITA_TITLEID "BROS00001")
 set(VITA_VPKNAME "Gun_Bros")
-set(VITA_VERSION "01.00")
+set(VITA_VERSION "01.01")
 set(VITA_MKSFOEX_FLAGS "-d ATTRIBUTE2=12 -s CONTENT_ID=HB0001-${VITA_TITLEID}_00-0000000000000000")
 
 # Optional: used for "send" and "dump" targets
@@ -95,6 +95,7 @@ include_directories(
 add_executable(${CMAKE_PROJECT_NAME}
                source/main.c
                source/audio.cpp
+               lib/soloud/soloud_wavstream.cpp
                source/dynlib.c
                source/java.c
                source/patch.c
@@ -133,7 +134,11 @@ add_executable(${CMAKE_PROJECT_NAME}
 # AudioSource classes. This file derives the original Gun Bros PCM pull source
 # from those classes but does not use dynamic_cast or typeid, so match the
 # library ABI locally instead of disabling RTTI for the rest of the loader.
-set_source_files_properties(source/audio.cpp PROPERTIES COMPILE_OPTIONS "-fno-rtti")
+# Compile the fixed WavStream into the loader so its symbols satisfy references
+# before libsoloud.a is searched. The SDK decoder, mixer and output backend stay
+# in use; the SDK's original soloud_wavstream.o is not pulled from the archive.
+set_source_files_properties(source/audio.cpp lib/soloud/soloud_wavstream.cpp
+                           PROPERTIES COMPILE_OPTIONS "-fno-rtti")
 
 if (NOT GUNBROS_ENABLE_LOGS)
   target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE GUNBROS_QUIET_LOGS=1)
