@@ -1,4 +1,4 @@
-# Gun Bros - PS Vita Port (Forked for interest, please check the main repo [from](https://github.com/Rocroverss/Gun-Bros-Psvita)  )
+# Gun Bros - PS Vita Port (Forked for interest, please check the main repo from Rocroverss(https://github.com/Rocroverss/Gun-Bros-Psvita)  )
 
 **Gun Bros** is a top-down twin-stick shooter developed by Glu Mobile.
 Play as Percy or Francis Gun and fight endless waves of enemies using a wide variety of weapons and gear. The game combines fast-paced shooting with character and equipment upgrades
